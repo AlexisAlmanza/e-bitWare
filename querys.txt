@@ -1,0 +1,100 @@
+
+
+---- Inicio productos
+INSERT INTO Productos VALUES(1,'Mochila', 99.9);
+INSERT INTO Productos VALUES(2,'Camara', 822.12);
+INSERT INTO Productos VALUES(3,'Termo', 23.3);
+INSERT INTO Productos VALUES(4,'Vasos', 28.4);
+INSERT INTO Productos VALUES(5,'Mesa', 91.2);
+INSERT INTO Productos VALUES(6,'Sillas', 102.2);
+INSERT INTO Productos VALUES(7,'Computadora', 12.3);
+INSERT INTO Productos VALUES(8,'Audifonos', 194.2);
+INSERT INTO Productos VALUES(9,'Lapices', 198.2);
+INSERT INTO Productos VALUES(10,'Plumas', 12.3);
+INSERT INTO Productos VALUES(11,'Libretas', 73.2);
+INSERT INTO Productos VALUES(12,'Mouse', 17.1);
+INSERT INTO Productos VALUES(13,'Teclados', 82.3);
+INSERT INTO Productos VALUES(14,'Tapete', 23.1);
+INSERT INTO Productos VALUES(15,'Llaves', 129.1);
+----Fin productos
+----Inicio cajeros
+INSERT INTO Cajeros VALUES(1,'HSBC');
+INSERT INTO Cajeros VALUES(2,'BBVA');
+INSERT INTO Cajeros VALUES(3,'INBURSA');
+INSERT INTO Cajeros VALUES(4,'BANCOMER');
+----Fin cajeros
+----Inicio Maquinas_Registradoras
+INSERT INTO Maquinas_Registradoras VALUES(1,1);
+INSERT INTO Maquinas_Registradoras VALUES(2,1);
+INSERT INTO Maquinas_Registradoras VALUES(3,1);
+INSERT INTO Maquinas_Registradoras VALUES(4,2);
+INSERT INTO Maquinas_Registradoras VALUES(5,2);
+INSERT INTO Maquinas_Registradoras VALUES(6,2);
+INSERT INTO Maquinas_Registradoras VALUES(7,3);
+INSERT INTO Maquinas_Registradoras VALUES(8,3);
+INSERT INTO Maquinas_Registradoras VALUES(9,3);
+
+----Fin Maquinas_Registradoras
+----Inicio Venta
+INSERT INTO Venta VALUES(1,1,2);
+INSERT INTO Venta VALUES(2,2,3);
+INSERT INTO Venta VALUES(3,3,6);
+INSERT INTO Venta VALUES(4,1,7);
+INSERT INTO Venta VALUES(1,3,9);
+INSERT INTO Venta VALUES(1,2,5);
+INSERT INTO Venta VALUES(2,3,3);
+INSERT INTO Venta VALUES(3,2,5);
+INSERT INTO Venta VALUES(4,1,8);
+----Fin Venta
+
+-- Inciso 3
+
+SELECT caj.NomApels, pro.Nombre, pro.Precio, ma.Piso
+FROM Venta ven
+INNER JOIN Productos pro ON pro.Producto = ven.Producto
+INNER JOIN Cajeros caj ON caj.Cajero = ven.Cajero
+INNER JOIN Maquinas_Registradoras ma ON ma.Maquina = ven.Maquina; 
+
+select * from Maquinas_Registradoras;
+
+INSERT INTO VENTA VALUES(2,5,12);
+INSERT INTO VENTA VALUES(3,6,1);
+INSERT INTO VENTA VALUES(1,7,2);
+INSERT INTO VENTA VALUES(3,8,10);
+
+
+---Inciso 4
+SELECT pro.Precio, ven.Producto, ma.Maquina, ma.Piso
+FROM Venta ven
+JOIN Productos pro ON pro.Producto = ven.Producto
+JOIN Maquinas_Registradoras ma ON ma.Maquina = ven.Maquina;
+
+SELECT var.piso, SUM(var.precio)
+FROM(
+SELECT pro.Precio, ven.Producto, ma.Maquina, ma.Piso
+FROM Venta ven
+JOIN Productos pro ON pro.Producto = ven.Producto
+JOIN Maquinas_Registradoras ma ON ma.Maquina = ven.Maquina
+) var 
+GROUP BY var.piso;
+
+----Inciso 5
+SELECT ca.cajero, ca.nomapels, SUM(pro.precio)
+FROM Venta ven
+JOIN Productos pro ON pro.producto = ven.producto
+JOIN Cajeros ca ON ca.cajero = ven.cajero
+GROUP BY ca.cajero;
+
+---Inciso 6
+
+SELECT var.cajero, var.nomapels, SUM(var.precio)
+FROM(
+SELECT pro.Precio, ven.Producto, ma.Maquina, ma.Piso, ca.nomapels, ca.cajero
+FROM Venta ven
+JOIN Productos pro ON pro.Producto = ven.Producto
+JOIN Cajeros ca ON ca.Cajero = ven.Cajero
+JOIN Maquinas_Registradoras ma ON ma.Maquina = ven.Maquina
+) var 
+GROUP BY var.cajero, var.nomapels
+HAVING SUM(var.precio)::numeric::integer  > 5000;
+
